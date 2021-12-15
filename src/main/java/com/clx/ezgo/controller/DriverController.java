@@ -1,4 +1,4 @@
-package com.example.ezgo.controller;
+package com.clx.ezgo.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,25 +17,28 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/upload")
-public class uploadController {
-    private static final Logger logger= LoggerFactory.getLogger(uploadController.class);
+public class UploadController {
+    private static final Logger logger= LoggerFactory.getLogger(UploadController.class);
     @RequestMapping("/picture")
-    public String uploadPicture(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String filePath = "";
+    public void uploadPicture(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         request.setCharacterEncoding("utf-8"); //设置编码
-        String realPath = request.getSession().getServletContext().getRealPath("/uploadFile/");
+
+        String id = request.getParameter("openID");
+        String category=request.getParameter("cat");
+        String filePath = "";
+        String relativePath="/driver/"+id+"/"+category+"/";
+        String realPath = request.getSession().getServletContext().getRealPath(relativePath );
         File dir = new File(realPath);
+
         //文件目录不存在，就创建一个
         if (!dir.isDirectory()) {
             dir.mkdirs();
         }
-        try {
+
             StandardMultipartHttpServletRequest req = (StandardMultipartHttpServletRequest) request;
             //获取formdata的值
             Iterator<String> iterator = req.getFileNames();
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
-            String timedata = request.getParameter("timedata");
 
             while (iterator.hasNext()) {
                 MultipartFile file = req.getFile(iterator.next());
@@ -51,14 +54,12 @@ public class uploadController {
                 filePath = request.getScheme() + "://" +
                         request.getServerName() + ":"
                         + request.getServerPort()
-                        + "/uploadFile/" + filename;
-                System.out.println("访问图片路径:" + filePath + "   username:" + username);
+                        + relativePath+filename;
+                System.out.println("访问图片路径:" + filePath + "   id:" + id);
                 System.out.println(realPath);
             }
-        } catch (Exception e) {
-            logger.error("", e);
-        }
-        return filePath;
+
+
 
     }
 
