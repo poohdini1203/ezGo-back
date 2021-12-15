@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clx.ezgo.mapper.UserInfoMapper">
+    <select id="getUserInfoByID" parameterType="String" resultType="com.clx.ezgo.entity.UserInfo">
+        select user_id id,user_name name,id_card IDCard,nick_name nickName,
+        avatar_url avatarUrl,cellphone cellphone,create_time createTime,is_forbidden isForbidden from user where user_id=#{id}
+    </select>
+    <select id="getAllUserInfo" resultType="com.clx.ezgo.entity.UserInfo">
+         select user_id id,user_name name,id_card IDCard,nick_name nickName,
+        avatar_url avatarUrl,cellphone cellphone,create_time createTime,is_forbidden isForbidden from user
+    </select>
+    <insert id="addUserInfo"  parameterType="com.clx.ezgo.entity.UserInfo"  >
+        insert into user(user_id,nick_name,avatar_url,user_name,id_card,cellphone) values(#{id},#{nickName},#{avatarUrl},
+        #{name},#{IDCard},#{cellphone})
+    </insert>
+    <update id="changeCellphone" >
+        update user set cellphone=#{cellphone} where user_id=#{id}
+    </update>
+    <update id="changeNickname">
+        update user set nick_name=#{nickname}  where user_id=#{id}
+    </update>
+    <update id="forbidUser">
+        update user set is_forbidden=true where user_id=#{id}
+    </update>
+    <update id="activeUser">
+        update user set is_forbidden=false where user_id=#{id}
+    </update>
+
+</mapper>

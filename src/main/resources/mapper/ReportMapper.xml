@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clx.ezgo.mapper.ReportMapper">
+        <insert id="addReport">
+            insert into report(receiver_id, receiver_trip_id, reporter_id, reporter_trip_id, type, content) values(#{receiverID},
+            #{receiverTripID},#{repoterID},#{repoterTripID},#{type},#{content})
+        </insert>
+
+        <select id="selectReportByUser" resultType="com.clx.ezgo.entity.Report">
+            select id id,receiver_id receiverID,receiver_trip_id receiverTripID,reporter_id repoterID,
+            reporter_trip_id repoterTripID,type type,content content,create_time createTime
+            from report where receiver_id=#{userID}
+        </select>
+</mapper>
+
+

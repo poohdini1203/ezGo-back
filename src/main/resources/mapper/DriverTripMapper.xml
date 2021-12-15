@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clx.ezgo.mapper.DriverTripMapper">
+
+    <insert id="addTrip" parameterType="com.clx.ezgo.entity.PassengerTrip" >
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            SELECT  LAST_INSERT_ID()
+        </selectKey>
+    insert into trip_driver(driver_id, departure, destination, departure_coordinate,
+    destination_coordinate, seat_capacity, depart_time, postscript,distance) values (#{driverID},#{departure},#{destination,},
+    #{departureCoordinate},#{destinationCoordinate},#{seatCapacity},#{departTime},#{postscript},#{distance})
+</insert>
+    <select id="getCurrentTripsByDriverID" parameterType="String" resultType="com.clx.ezgo.entity.DriverTrip">
+        select trip_id id,driver_id driverID,departure departure,destination destination,departure_coordinate
+        departureCoordinate,destination_coordinate destinationCoordinate,seat_capacity seatCapacity,current_people
+        currentPeople,depart_time departTime,postscript postscript,distance distance,create_time createTime,is_finished isFinished,
+         finish_time finishTime,is_canceled isCanceled from trip_driver where driver_id=#{id} and is_canceled=false
+         and is_finished=false order by departTime asc
+    </select>
+
+    <select id="getHistoryByDriverID" resultType="com.clx.ezgo.entity.DriverTrip">
+        select trip_id id,driver_id driverID,departure departure,destination destination,departure_coordinate
+        departureCoordinate,destination_coordinate destinationCoordinate,seat_capacity seatCapacity,current_people
+        currentPeople,depart_time departTime,postscript postscript,create_time createTime,distance distance,is_finished isFinished,
+         finish_time finishTime,is_canceled isCanceled from trip_driver where driver_id=#{id} and is_canceled=true
+         or is_finished=true order by departTime asc
+    </select>
+
+    <select id="getAllTripsByDriver" resultType="com.clx.ezgo.entity.DriverTrip">
+        select trip_id id,driver_id driverID,departure departure,destination destination,departure_coordinate
+        departureCoordinate,destination_coordinate destinationCoordinate,seat_capacity seatCapacity,current_people
+        currentPeople,depart_time departTime,postscript postscript,create_time createTime,distance distance,is_finished isFinished,
+         finish_time finishTime,is_canceled isCanceled from trip_driver where driver_id=#{driverID} order by departTime asc
+    </select>
+    <select id="getTripByTripID" parameterType="int" resultType="com.clx.ezgo.entity.DriverTrip">
+        select trip_id id,driver_id driverID,departure departure,destination destination,departure_coordinate
+        departureCoordinate,destination_coordinate destinationCoordinate,seat_capacity seatCapacity,current_people
+        currentPeople,depart_time departTime,postscript postscript,create_time createTime,distance distance,is_finished isFinished,
+         finish_time finishTime,is_canceled isCanceled from trip_driver where trip_id=#{tripID}
+    </select>
+
+    <select id="getTripsByCondition" resultType="com.clx.ezgo.entity.DriverTrip">
+        select trip_id id,driver_id driverID,departure departure, destination destination,departure_coordinate
+        departureCoordinate,destination_coordinate destinationCoordinate,seat_capacity seatCapacity,current_people currentPeople,
+        depart_time departTime,postscript  postscript,create_time createTime,distance distance,is_finished isFinished,finish_time finishTime,
+        is_canceled isCanceled from trip_driver where
+        is_finished=false and is_canceled=false and departure like #{departure} and destination like #{destination} and depart_time between #{timeStart} and #{timeEnd}
+        and current_people &lt; seat_capacity and #{howManyPeople} &lt;= (seat_capacity-current_people)
+        order by departTime asc;
+    </select>
+
+    <update id="updateCurrentPeople" parameterType="int">
+        update trip_driver set current_people=(current_people+#{change}) where trip_id=#{tripID}
+    </update>
+    <update id="tripCancel" parameterType="int">
+        update trip_driver set is_canceled=true where trip_id=#{tripID}
+    </update>
+
+    <update id="tripFinish">
+        update trip_driver set is_finished=true where trip_id=#{tripID}
+    </update>
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clx.ezgo.mapper.PassengerTripMapper">
+
+<insert id="addTrip" parameterType="com.clx.ezgo.entity.PassengerTrip">
+    <selectKey resultType="int" order="AFTER" keyProperty="id">
+        SELECT  LAST_INSERT_ID()
+    </selectKey>
+    insert into trip_passenger(passenger_id, departure, destination, departure_coordinate,
+    destination_coordinate, how_many_people, depart_time, postscript,distance) values (#{passengerID},#{departure},#{destination,},
+    #{departureCoordinate},#{destinationCoordinate},#{howManyPeople},#{departTime},#{postscript},#{distance})
+</insert>
+
+    <select id="getHistoryByPassengerID" parameterType="String" resultType="com.clx.ezgo.entity.PassengerTrip">
+        select trip_id id,passenger_id passengerID,departure departure, destination destination,departure_coordinate
+        departureCoordinate,destination_coordinate destinationCoordinate,how_many_people howManyPeople,depart_time
+        departTime,postscript  postscript,distance distance,create_time createTime,has_driver hasDriver,is_picked_up isPickedUp,pick_up_time
+        pickUpTime,is_finished isFinished,finish_time finishTime,is_canceled isCanceled from trip_passenger where passenger_id=#{id}
+        and is_finished=true or is_canceled=true  order by departTime asc
+    </select>
+
+    <select id="getCurrentTripsByPassengerID" parameterType="String" resultType="com.clx.ezgo.entity.PassengerTrip">
+        select trip_id id,passenger_id passengerID,departure departure, destination destination,departure_coordinate
+        departureCoordinate,destination_coordinate destinationCoordinate,how_many_people howManyPeople,depart_time
+        departTime,postscript  postscript,distance distance,create_time createTime,has_driver hasDriver,is_picked_up isPickedUp,pick_up_time
+        pickUpTime,is_finished isFinished,finish_time finishTime,is_canceled isCanceled from trip_passenger where passenger_id=#{id}
+        and is_canceled=false and is_finished=false order by departTime asc
+    </select>
+
+    <select id="getAllTripsByPassengerID" resultType="com.clx.ezgo.entity.PassengerTrip">
+        select trip_id id,passenger_id passengerID,departure departure, destination destination,departure_coordinate
+        departureCoordinate,destination_coordinate destinationCoordinate,how_many_people howManyPeople,depart_time
+        departTime,postscript  postscript,distance distance,create_time createTime,has_driver hasDriver,is_picked_up isPickedUp,pick_up_time
+        pickUpTime,is_finished isFinished,finish_time finishTime,is_canceled isCanceled from trip_passenger where passenger_id=#{id}
+        order by departTime asc
+    </select>
+
+    <select id="getTripByTripID" parameterType="int" resultType="com.clx.ezgo.entity.PassengerTrip">
+        select trip_id id,passenger_id passengerID,departure departure, destination destination,departure_coordinate
+        departureCoordinate,destination_coordinate destinationCoordinate,how_many_people howManyPeople,depart_time
+        departTime,postscript  postscript,distance distance,create_time createTime,has_driver hasDriver,is_picked_up isPickedUp,pick_up_time
+        pickUpTime,is_finished isFinished,finish_time finishTime,is_canceled isCanceled from trip_passenger where trip_id=#{tripID}
+
+    </select>
+
+    <select id="getTripsByCondition" resultType="com.clx.ezgo.entity.PassengerTrip">
+        select trip_id id,passenger_id passengerID,departure departure, destination destination,departure_coordinate
+        departureCoordinate,destination_coordinate destinationCoordinate,how_many_people howManyPeople,depart_time
+        departTime,postscript  postscript,distance distance,create_time createTime,has_driver hasDriver,is_picked_up isPickedUp,pick_up_time
+        pickUpTime,is_finished isFinished,finish_time finishTime,is_canceled isCanceled from trip_passenger where
+        is_finished=false and is_canceled=false and departure like #{departure} and destination like #{destination}
+        and depart_time between #{timeStart} and #{timeEnd} and
+        how_many_people &lt;= #{howManyPeople} and has_driver=false order by departTime asc
+    </select>
+
+
+    <update id="tripCancel" parameterType="int">
+        update trip_passenger set is_canceled=true where trip_id=#{tripID}
+    </update>
+
+    <update id="confirmPickedUp" >
+         update trip_passenger set is_picked_up=true,pick_up_time=current_timestamp where trip_id=#{tripID}
+    </update>
+
+    <update id="confirmFinish" >
+         update trip_passenger set is_finished=true ,finish_time=current_timestamp where trip_id=#{tripID}
+    </update>
+
+    <update id="setHasDriver" >
+        update trip_passenger set has_driver=#{hasDriver} where trip_id=#{tripID}
+    </update>
+</mapper>

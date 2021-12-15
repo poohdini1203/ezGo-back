@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clx.ezgo.mapper.DriverMapper">
+
+
+    <insert id="addDriver" parameterType="String">
+        insert into driver(driver_id,model,plate_number,color) values(#{id},#{model},#{plate},#{color})
+    </insert>
+
+    <select id="getDriverRequests" resultType="com.clx.ezgo.entity.DriverInfo">
+        select d.driver_id id,d.id_card_url IDCardUrl,d.driving_licence_url drivingLicenceUrl,d.vehicle_licence_url
+        vehicleLicenceUrl,d.car_image_url carImgUrl,d.is_verified isVerified,d.is_active isActive,d.model model,
+         d.plate_number plateNumber,d.color color from driver d where is_verified=false
+    </select>
+
+    <select id="getDriverInfoByID" parameterType="String" resultType="com.clx.ezgo.entity.DriverInfo">
+        select d.driver_id id,d.id_card_url IDCardUrl,d.driving_licence_url drivingLicenceUrl,d.vehicle_licence_url
+        vehicleLicenceUrl,d.car_image_url carImgUrl,d.is_verified isVerified,d.is_active isActive,d.model model,
+         d.plate_number plateNumber,d.color color from driver d where d.driver_id=#{id}
+    </select>
+
+    <update id="updateIDCardImg" parameterType="String">
+        update driver set id_card_url=concat_ws("---",id_card_url,#{url}) where driver_id=#{id}
+    </update>
+
+    <update id="updateDrivingLicence" parameterType="String">
+        update driver set driving_licence_url=concat_ws("---",driving_licence_url,#{url}) where driver_id=#{id}
+    </update>
+
+    <update id="updateVehicleLicence" parameterType="String">
+        update driver set vehicle_licence_url=concat_ws("---",vehicle_licence_url,#{url}) where driver_id=#{id}
+    </update>
+
+    <update id="updateCarImg" parameterType="String">
+        update driver set car_image_url=concat_ws("---",car_image_url,#{url}) where driver_id=#{id}
+    </update>
+    <update id="setVerified">
+        update driver set is_verified=true where driver_id=#{id}
+    </update>
+    <update id="setActive">
+        update driver set is_active=#{active} where driver_id=#{id}
+    </update>
+</mapper>
+
+

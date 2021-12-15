@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.clx.ezgo.mapper.DriverPassengerMappingMapper">
+
+    <insert id="addMapping" parameterType="com.clx.ezgo.entity.DriverPassengerMapping">
+        insert into trip_driver_passenger(driver_trip_id, passenger_trip_id,driver_accept) values(#{driverTripID},#{passengerTripID},#{driverAccept})
+    </insert>
+
+    <select id="checkPassengerInvit" resultType="com.clx.ezgo.entity.DriverPassengerMapping">
+        select * from trip_driver_passenger where driver_trip_id=#{driverTripID} and passenger_trip_id=#{passengerTripID} and driver_accept=false
+        and driver_refuse=false and passenger_cancel=false
+    </select>
+    <!--private int id;-->
+    <!--private int driverTripID;-->
+    <!--private int passengerTripID;-->
+    <!--private boolean driverAccept;-->
+    <!--private boolean driverRefuse;-->
+    <!--private boolean driverCancel;-->
+    <!--private boolean passengerCancel;-->
+    <select id="getPassengerTripsID" parameterType="int" resultType="int">
+        select passenger_trip_id from trip_driver_passenger where driver_trip_id=#{driverTripID} and
+        driver_accept=true and driver_cancel=false and passenger_cancel=false
+    </select>
+    <select id="getPassengerInvitationsID" parameterType="int" resultType="int">
+        select passenger_trip_id from trip_driver_passenger where driver_trip_id=#{driverTripID} and
+        driver_accept=false and driver_refuse=false and passenger_cancel=false
+    </select>
+
+    <select id="getDriverTripID" parameterType="int" resultType="int">
+        select driver_trip_id from trip_driver_passenger where passenger_trip_id=#{passengerTripID}
+        and driver_accept=true and driver_cancel=false
+    </select>
+
+    <update id="driverAccept" parameterType="int" >
+        update trip_driver_passenger set driver_accept=true where driver_trip_id=#{driverTripID}
+        and passenger_trip_id=#{passengerTripID}
+    </update>
+    <update id="driverRefuse" parameterType="int">
+        update trip_driver_passenger set driver_refuse=true where driver_trip_id=#{driverTripID}
+        and passenger_trip_id=#{passengerTripID}
+    </update>
+
+    <update id="passengerCancel" >
+        update trip_driver_passenger set passenger_cancel=true where driver_trip_id=#{driverTripID}
+        and passenger_trip_id=#{passengerTripID}
+    </update>
+
+    <update id="passengerWithdrawInvit">
+        update trip_driver_passenger set passenger_cancel=true where passenger_trip_id=#{passengerTripID}
+    </update>
+
+    <update id="driverCancel">
+        update trip_driver_passenger set driver_cancel=true where driver_trip_id=#{driverTripID}
+        and passenger_trip_id=#{passengerTripID}
+    </update>
+    
+    <select id="getUnFinishedPassengerCount" parameterType="int">
+        select count(*) from trip_driver_passenger mapping,trip_passenger p where driver_trip_id=#{driverTripID} and
+        mapping.passenger_trip_id=p.trip_id
+        and mapping.driver_accept=true  and mapping.driver_cancel=false and mapping.passenger_cancel=false and
+        p.is_finished=false
+    </select>
+</mapper>
+
+
