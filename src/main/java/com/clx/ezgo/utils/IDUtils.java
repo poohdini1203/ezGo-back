@@ -13,7 +13,7 @@ public class IDUtils {
     public static String verifyIDcard(String name,String IDCard){
         try{
 
-            Credential cred = new Credential("AKIDrSmOluhPtABwCDuYq1Wx9fwbzCbktJiW", "4t67vVptCH6hT0IJ4g3C3WkeNqOJ1T4Q");
+            Credential cred = new Credential("", "");
 
             HttpProfile httpProfile = new HttpProfile();
             httpProfile.setEndpoint("faceid.tencentcloudapi.com");
